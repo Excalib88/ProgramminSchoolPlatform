@@ -16,6 +16,7 @@ builder.Services.AddDbContext<DataContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("Db")));
 
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<DataSeeder>();
 builder.Services.AddAuthentication(opt => {
         opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
         opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -72,12 +73,13 @@ builder.Services.AddSwaggerGen(option =>
 });
 
 var app = builder.Build();
+//await Seed();
 
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
 }
+
 app.UseSwagger();
 app.UseSwaggerUI();
 
@@ -91,3 +93,10 @@ app.UseScopeValidation();
 app.MapControllers();
 
 app.Run();
+
+async Task Seed()
+{
+    using var scope = app.Services.CreateScope();
+    var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+    await seeder.Seed();
+}

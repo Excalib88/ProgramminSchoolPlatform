@@ -27,9 +27,9 @@ public class ScopeValidationMiddleware
             {
                 context.Response.StatusCode = 403;
             }
-            
-            await _next(context);
         }
+
+        await _next(context);
     }
 }
 

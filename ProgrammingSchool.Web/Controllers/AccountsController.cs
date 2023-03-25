@@ -8,8 +8,9 @@ using ProgrammingSchool.Web.Services.Identity;
 
 namespace ProgrammingSchool.Web.Controllers;
 
+[ApiController]
 [Route("accounts")]
-public class AccountsController : ApiController
+public class AccountsController : ControllerBase
 {
     private readonly UserManager<IdentityUser<long>> _userManager;
     private readonly DataContext _context;
@@ -69,7 +70,7 @@ public class AccountsController : ApiController
         
         var user = new IdentityUser<long> { Email = request.Email, UserName = request.Email };
         var result = await _userManager.CreateAsync(user, request.Password);
-            
+
         foreach (var error in result.Errors)
         {
             ModelState.AddModelError(string.Empty, error.Description);
@@ -77,6 +78,12 @@ public class AccountsController : ApiController
 
         if (result.Succeeded)
         {
+            var findUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == request.Email);
+
+            if (findUser == null) throw new Exception($"User {request.Email} not found");
+
+            await _userManager.AddToRoleAsync(findUser, RoleConsts.Member);
+            
             return await Authenticate(new AuthRequest
             {
                 Email = request.Email,
