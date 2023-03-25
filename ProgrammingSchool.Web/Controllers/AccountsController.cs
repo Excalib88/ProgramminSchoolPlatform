@@ -9,13 +9,13 @@ using ProgrammingSchool.Web.Services.Identity;
 namespace ProgrammingSchool.Web.Controllers;
 
 [Route("accounts")]
-public class AccountController : ApiController
+public class AccountsController : ApiController
 {
     private readonly UserManager<IdentityUser<long>> _userManager;
     private readonly DataContext _context;
     private readonly ITokenService _tokenService;
 
-    public AccountController(ITokenService tokenService, DataContext context, UserManager<IdentityUser<long>> userManager)
+    public AccountsController(ITokenService tokenService, DataContext context, UserManager<IdentityUser<long>> userManager)
     {
         _tokenService = tokenService;
         _context = context;

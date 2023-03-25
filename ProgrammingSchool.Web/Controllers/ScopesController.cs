@@ -31,4 +31,30 @@ public class ScopesController : ApiController
         
         return Ok(new {scope = string.Join(" ", scopes)});
     }
+
+    [HttpGet("{userId:long}")]
+    public async Task<IActionResult> GetScopesByUserId(long userId)
+    {
+        var scopes = await _context.UserScopes
+            .Include(x => x.Scope)
+            .Where(x => x.UserId == userId)
+            .ToListAsync();
+
+        return Ok(new {scope = string.Join(" ", scopes)});
+    }
+
+    [HttpPost("{userId:long}")]
+    public async Task<IActionResult> AddScopeToUser([FromRoute] long userId, [FromBody]string scope)
+    {
+        var scopeEntity = await _context.Scopes.FirstOrDefaultAsync(x => x.Name == scope);
+        await _context.UserScopes.AddAsync(new UserScope
+        {
+            Scope = scopeEntity,
+            UserId = userId
+        });
+        
+        await _context.SaveChangesAsync();
+
+        return await GetScopesByUserId(userId);
+    }
 }
