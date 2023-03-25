@@ -1,19 +1,8 @@
 version: "3.9"
 networks:
-  programming-school-network:
+  default:
     driver: bridge
 services:
-  app: 
-    container_name: programming-school
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "80:80"
-    networks:
-      - programming-school-network
-    depends_on:
-      - postgres_db
   postgres_db:
     container_name: postgres
     image: postgres:latest
@@ -24,8 +13,34 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - programming-school-network
+      - default
     volumes:
       - postgres-data:/var/lib/postgresql/data
+  app: 
+    container_name: programming-school
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    expose:
+      - "80"
+    networks:
+      - default
+    depends_on:
+      - postgres_db
+  front:
+    container_name: programming-school-front
+    build:
+      context: .
+      dockerfile: ./programming-school/Dockerfile
+    ports:
+      - "81:81"
+    expose:
+      - "81"
+    networks:
+      - default
+    depends_on:
+      - app
 volumes:
   postgres-data:

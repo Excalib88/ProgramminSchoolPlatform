@@ -5,11 +5,12 @@ using ProgrammingSchool.Web.Data.Entities;
 
 namespace ProgrammingSchool.Web.Data;
 
-public class DataContext : IdentityDbContext<IdentityUser<long>, IdentityRole<long>, long>
+public sealed class DataContext : IdentityDbContext<IdentityUser<long>, IdentityRole<long>, long>
 {
     public DataContext (DbContextOptions<DataContext> options)
         : base(options)
     {
+        Database.Migrate();
     }
 
     public DbSet<Student> Students { get; set; } = null!;
