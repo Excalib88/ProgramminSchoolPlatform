@@ -10,7 +10,7 @@ public class RegisterRequest
  
     [Required]
     [Display(Name = "Дата рождения")]
-    public DateTime Year { get; set; }
+    public DateTime BirthDate { get; set; }
 
     [Required]
     [DataType(DataType.Password)]

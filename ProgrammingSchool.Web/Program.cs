@@ -14,7 +14,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddDbContext<DataContext>(opt => 
     opt.UseNpgsql(builder.Configuration.GetConnectionString("Db")));
-
+builder.Services.AddCors(c => c.AddPolicy("cors", opt =>
+{
+    opt.AllowAnyHeader();
+    opt.AllowCredentials();
+    opt.AllowAnyMethod();
+    opt.WithOrigins(builder.Configuration.GetSection("Cors:Urls").Get<string[]>()!);
+}));
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<DataSeeder>();
 builder.Services.AddAuthentication(opt => {
@@ -73,7 +79,7 @@ builder.Services.AddSwaggerGen(option =>
 });
 
 var app = builder.Build();
-//await Seed();
+await Seed();
 
 if (!app.Environment.IsDevelopment())
 {
@@ -89,7 +95,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseScopeValidation();
-
+app.UseCors("cors");
 app.MapControllers();
 
 app.Run();

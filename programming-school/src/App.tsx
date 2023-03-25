@@ -2,6 +2,7 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import { login } from './services/auth.service'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -18,7 +19,12 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
+        <button onClick={() => {
+            setCount((count) => count + 1)
+            login('rave9373@gmail.com', '123Abc!').then(
+              (response) => {console.log(response)}
+            )
+          }}>
           count is {count}
         </button>
         <p>

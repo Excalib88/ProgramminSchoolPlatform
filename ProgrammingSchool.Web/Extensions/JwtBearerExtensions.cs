@@ -11,7 +11,7 @@ namespace ProgrammingSchool.Web.Extensions;
 
 public static class JwtBearerExtensions
 {
-    public static List<Claim> CreateClaims(this IdentityUser<long> user, IdentityRole<long> role, List<Scope?> scopes)
+    public static List<Claim> CreateClaims(this IdentityUser<long> user, List<IdentityRole<long>> roles, List<Scope?> scopes)
     {
         var claims = new List<Claim>
         {
@@ -20,7 +20,7 @@ public static class JwtBearerExtensions
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new(ClaimTypes.Name, user.UserName!),
             new(ClaimTypes.Email, user.Email!),
-            new(ClaimTypes.Role, role.Name!),
+            new(ClaimTypes.Role, string.Join(" ", roles.Select(x => x.Name))),
             new("scope", string.Join(" ", scopes))
         };
         return claims;

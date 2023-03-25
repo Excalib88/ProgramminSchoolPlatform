@@ -50,10 +50,10 @@ public class AccountsController : ControllerBase
         if (user is null)
             return Unauthorized();
 
-        var roleId = (await _context.UserRoles.SingleAsync(r => r.UserId == user.Id)).RoleId;
-        var role = await _context.Roles.FirstAsync(r => r.Id == roleId);
+        var roleIds = await _context.UserRoles.Where(r => r.UserId == user.Id).Select(x => x.RoleId).ToListAsync();
+        var roles = _context.Roles.Where(x => roleIds.Contains(x.Id)).ToList();
         
-        var accessToken = _tokenService.CreateToken(user, role);
+        var accessToken = _tokenService.CreateToken(user, roles);
         
         return Ok(new AuthResponse
         {

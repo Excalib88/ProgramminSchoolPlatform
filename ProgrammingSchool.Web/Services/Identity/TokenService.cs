@@ -18,7 +18,7 @@ public class TokenService : ITokenService
         _context = context;
     }
 
-    public string CreateToken(IdentityUser<long> user, IdentityRole<long> role)
+    public string CreateToken(IdentityUser<long> user, List<IdentityRole<long>> roles)
     {
         var scopes = _context.UserScopes
             .Include(x => x.Scope)
@@ -26,7 +26,7 @@ public class TokenService : ITokenService
             .Select(x => x.Scope)
             .ToList();
         var token = user
-            .CreateClaims(role, scopes)
+            .CreateClaims(roles, scopes)
             .CreateJwtToken(_configuration);
         var tokenHandler = new JwtSecurityTokenHandler();
         
