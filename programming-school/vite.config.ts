@@ -7,6 +7,7 @@ export default defineConfig({
     hmr: {
       host: '0.0.0.0',
       port: 81,
+      overlay: false
     },
   },
   plugins: [react()],
