@@ -22,4 +22,6 @@ public sealed class DataContext : IdentityDbContext<IdentityUser<long>, Identity
     public DbSet<Scope> Scopes { get; set; } = null!;
     public DbSet<UserScope> UserScopes { get; set; } = null!;
     public DbSet<BalanceHistory> BalanceHistories { get; set; } = null!;
+    public DbSet<StudentCourse> StudentCourses { get; set; } = null!;
+    public DbSet<StudentLesson> StudentLessons { get; set; } = null!;
 }

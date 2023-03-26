@@ -1,6 +1,6 @@
-namespace ProgrammingSchool.Web.Data.Entities;
+namespace ProgrammingSchool.Web.Models;
 
-public class Course : BaseEntity
+public class CourseResponse
 {
     public string Name { get; set; } = null!;
     public string? Description { get; set; }
@@ -10,6 +10,5 @@ public class Course : BaseEntity
     /// Сложность
     /// </summary>
     public int Complexity { get; set; }
-    
-    public List<Lesson>? Lessons { get; set; }
+    public ActiveState State { get; set; }
 }

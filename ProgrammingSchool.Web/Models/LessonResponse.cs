@@ -1,6 +1,6 @@
-namespace ProgrammingSchool.Web.Data.Entities;
+namespace ProgrammingSchool.Web.Models;
 
-public class Lesson : BaseEntity
+public class LessonResponse
 {
     public string Name { get; set; } = null!;
     public string? Description { get; set; }
@@ -15,5 +15,5 @@ public class Lesson : BaseEntity
     public int Complexity { get; set; }
     
     public long? CourseId { get; set; }
-    public Course? Course { get; set; }
+    public ActiveState State { get; set; }
 }

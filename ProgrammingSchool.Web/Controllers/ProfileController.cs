@@ -11,11 +11,8 @@ namespace ProgrammingSchool.Web.Controllers;
 [Route("profiles")]
 public class ProfileController : ApiController
 {
-    private readonly DataContext _context;
-
-    public ProfileController(DataContext context)
+    public ProfileController(DataContext context) : base(context)
     {
-        _context = context;
     }
 
     [HttpGet]
@@ -24,18 +21,18 @@ public class ProfileController : ApiController
     {
         var role = HttpContext.User.Claims.First(x => x.Type == ClaimTypes.Role).Value;
         var userId = int.Parse(HttpContext.User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
-        var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+        var user = await DataContext.Users.FirstOrDefaultAsync(x => x.Id == userId);
 
         if (role == RoleConsts.Member)
         {
-            var student = await _context.Students
+            var student = await DataContext.Students
                 .Include(x => x.User)
                 .FirstOrDefaultAsync(x => x.UserId == userId);
             
             return student != null ? Ok(student) : Ok(user);
         }
 
-        var teacher = await _context.Teachers
+        var teacher = await DataContext.Teachers
             .Include(x => x.User)
             .FirstOrDefaultAsync(x => x.UserId == userId);
 

@@ -8,18 +8,15 @@ namespace ProgrammingSchool.Web.Controllers;
 [Route("scopes")]
 public class ScopesController : ApiController
 {
-    private readonly DataContext _context;
-
-    public ScopesController(DataContext context)
+    public ScopesController(DataContext context) : base(context)
     {
-        _context = context;
     }
     
     [HttpPost]
     public async Task<IActionResult> Add(Scope scope)
     {
-        await _context.Scopes.AddAsync(scope);
-        await _context.SaveChangesAsync();
+        await DataContext.Scopes.AddAsync(scope);
+        await DataContext.SaveChangesAsync();
         
         return Ok();
     }
@@ -27,7 +24,7 @@ public class ScopesController : ApiController
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var scopes = await _context.Scopes.ToListAsync();
+        var scopes = await DataContext.Scopes.ToListAsync();
         
         return Ok(new {scope = string.Join(" ", scopes)});
     }
@@ -35,7 +32,7 @@ public class ScopesController : ApiController
     [HttpGet("{userId:long}")]
     public async Task<IActionResult> GetScopesByUserId(long userId)
     {
-        var scopes = await _context.UserScopes
+        var scopes = await DataContext.UserScopes
             .Include(x => x.Scope)
             .Where(x => x.UserId == userId)
             .ToListAsync();
@@ -46,14 +43,14 @@ public class ScopesController : ApiController
     [HttpPost("{userId:long}")]
     public async Task<IActionResult> AddScopeToUser([FromRoute] long userId, [FromBody]string scope)
     {
-        var scopeEntity = await _context.Scopes.FirstOrDefaultAsync(x => x.Name == scope);
-        await _context.UserScopes.AddAsync(new UserScope
+        var scopeEntity = await DataContext.Scopes.FirstOrDefaultAsync(x => x.Name == scope);
+        await DataContext.UserScopes.AddAsync(new UserScope
         {
             Scope = scopeEntity,
             UserId = userId
         });
         
-        await _context.SaveChangesAsync();
+        await DataContext.SaveChangesAsync();
 
         return await GetScopesByUserId(userId);
     }
